@@ -21,6 +21,12 @@ class MoviesController < ApplicationController
       else
         @movies = Movie.all
       end
+      
+      @movies = Movie.all
+      @all_ratings = Movie.all_ratings
+      ratings = params[:ratings].nil? ? @all_ratings : params[:ratings].keys
+      @movies = Movie.with_ratings(ratings)
+      @ratings_display = ratings
     end
   
     def new
