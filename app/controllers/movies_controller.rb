@@ -8,25 +8,38 @@ class MoviesController < ApplicationController
   
     def index
       @movies = Movie.all
-      if params[:sort_using].to_s == 'title'
-        
-        @movies = Movie.all.order(params[:sort_using])
-        @sort_using_title = 'hilite'
-        
-      elsif params[:sort_using].to_s == 'release_date'
-        
-        @movies = Movie.all.order(params[:sort_using])
-        @sort_using_releaseDate = 'hilite'
-        
+      if params[:sort_using]
+        session[:sort_using] = params[:sort_using]
+        sort_criteria = params[:sort_using]
+      elsif session[:sort_using]
+        sort_criteria = session[:sort_using]
+      end    
+      
+      @all_ratings = Movie.all_ratings
+      
+      if(params[:ratings].nil?)
+        if(session[:ratings_display].nil?)
+          ratings = @all_ratings
+        else
+          ratings = JSON.parse(session[:ratings_display])
+        end
       else
-        @movies = Movie.all
+        ratings = params[:ratings].keys
       end
       
-      @movies = Movie.all
-      @all_ratings = Movie.all_ratings
-      ratings = params[:ratings].nil? ? @all_ratings : params[:ratings].keys
-      @movies = Movie.with_ratings(ratings)
       @ratings_display = ratings
+      
+      if sort_criteria == "title" 
+        @movies = Movie.with_ratings(ratings).order(:title)
+      elsif sort_criteria == "release_date"
+        @movies = Movie.with_ratings(ratings).order(:release_date)
+      else
+        @movies = Movie.with_ratings(ratings)
+      end
+      
+      session[:ratings_display] = JSON.generate(ratings)
+      session[:ratings] = params[:ratings]
+      @sort_using = sort_criteria
     end
   
     def new

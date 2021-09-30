@@ -12,6 +12,7 @@
       
     </div>
   <% end %>
+  <%= hidden_field_tag 'sort_using', @sort_using%>
   <%= submit_tag 'Refresh', id: 'ratings_submit', class: 'btn btn-primary' %>
 <% end %>
 <br/>
@@ -20,13 +21,13 @@
   <thead>
     <tr>
       
-      <th class="<%= @sort_using_title %>">
+      <th class="<%= @sort_using == 'title' ? 'bg-warning hilite' : '' %>">
         <%= link_to 'Movie Title', movies_path({:sort_using => 'title',:ratings => @ratings}), :id => 'title_header' %>
       </th>
       
       <th>Rating</th>
       
-      <th class="<%= @sort_using_releaseDate %>">
+      <th class="<%= @sort_using == 'release_date' ? 'bg-warning hilite' : '' %>">
         <%= link_to 'Release Date', movies_path({:sort_using => 'release_date',:ratings => @ratings}), :id => 'release_date_header' %>
       </th>
       
